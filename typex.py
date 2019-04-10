@@ -1,10 +1,8 @@
 from tkinter import *
 import numpy as np
 
-
 root = Tk()
 root.title('TYPEX')
-
 
 E_D_Label = Label(root, text='Select Mode:', bg='white', fg='red', width=100)
 E_D_Label.pack()
@@ -45,9 +43,8 @@ Norm_But.pack()
 
 E_D_Text_I_Label = Label(root, text='Write the message:', bg='white', fg='red', width=100)
 E_D_Text_I_Label.pack()
-E_D_Text_Input = Entry(root, width=100, show='*')
+E_D_Text_Input = Entry(root, width=100)
 E_D_Text_Input.pack()
-
 
 b = Button(root, text="Crypt")
 E_D_Text_O_Label = Label(root, text='Final message:', bg='white', fg='red', width=100)
@@ -56,17 +53,20 @@ E_D_Text_Output = Label(root, bg='black', fg='white', width=100)
 
 def Crypt(event):
     # Роторы
-    rotors = (
-        (10, 24, 14, 12, 23, 2, 7, 15, 24, 2, 7, 5, 22, 6, 2, 1, 22, 12, 6, 9, 7, 2, 11, 23, 14, 2),
-        (1, 7, 11, 26, 12, 5, 11, 20, 11, 7, 18, 6, 17, 18, 19, 1, 13, 5, 2, 9, 11, 13, 6, 17, 26, 24),
-        (9, 1, 21, 6, 4, 19, 25, 6, 17, 10, 26, 1, 23, 6, 1, 17, 19, 17, 25, 21, 3, 21, 17, 1, 18, 20)
-    )
+    rotors = [
+        [10, 24, 14, 12, 23, 2, 7, 15, 24, 2, 7, 5, 22, 6, 2, 1, 22, 12, 6, 9, 7, 2, 11, 23, 14, 2],
+        [1, 7, 11, 26, 12, 5, 11, 20, 11, 7, 18, 6, 17, 18, 19, 1, 13, 5, 2, 9, 11, 13, 6, 17, 26, 24],
+        [9, 1, 21, 6, 4, 19, 25, 6, 17, 10, 26, 1, 23, 6, 1, 17, 19, 17, 25, 21, 3, 21, 17, 1, 18, 20]
+    ]
+    for i in range(0, 3):
+        np.random.shuffle(rotors[i])
 
     # Коммутатор
     switch = {
         'H': 'Z', 'S': 'N', 'L': 'M',
         'P': 'Q', 'R': 'W', 'X': 'Y'
     }
+
     # Первая стадия - роторное шифрование
     def stageOne(mode, message):
         X, Y, Z = 2, 0, 1  # Позиция роторов
@@ -117,26 +117,14 @@ def Crypt(event):
         if mode == 'D':
             message = stageTwo(message)
             message = stageOne(mode, message)
-        if mode not in ['E', 'D']:
-            E_D_Text_Output['text'] = "Error: mode is not Found!"
-            raise SystemExit
         return message
 
-    E_D_Text_Output['text'] = encryptDecrypt(mode)
+    E_D_Text_Output['text'] = '{}----->{}'.format(E_D_Text_Input.get().upper(), encryptDecrypt(mode))
 
 
 b.bind('<Button-1>', Crypt)
 b.pack()
 E_D_Text_Output.pack()
 
-check_label = Label(root, text='Check Mode:', bg='white', fg='red', width=100)
-check_entry = Entry(root, bg='black', fg='white', width=100)
-check_bot = Button(root, text='Check')
-
-check_label.pack()
-
-check_bot.bind('<Button-1>', Crypt)
-check_bot.pack()
-check_entry.pack()
 
 root.mainloop()
