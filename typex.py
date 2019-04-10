@@ -1,4 +1,6 @@
 from tkinter import *
+import numpy as np
+
 
 root = Tk()
 root.title('TYPEX')
